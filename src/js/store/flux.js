@@ -1,45 +1,134 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			contactos : [],
 		},
+
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
+			CreateContact: async ({nombre, direccion, telefono, correo}) => {
+				//fetch POST
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				
+				const raw = JSON.stringify({
+				  "name": nombre,
+				  "phone": telefono,
+				  "email": correo,
+				  "address": direccion
 				});
+				
+				const requestOptions = {
+				  method: "POST",
+				  headers: myHeaders,
+				  body: raw,
+				  redirect: "follow"
+				};
+				
+				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian", requestOptions)
+				  .then((response) => response.json())
+				  .then((result) => {console.log(result.contacts)})
+				  .catch((error) => console.error(error));
+			},
+			
+			Contacts: async() => {  
+				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts" ,{
+					method : "GET"
+				})
+				.then((response) =>{
+					if (response.status >= 200 && response.status <= 299){
+						return response.json()
+					} else if (response.status >= 400 && response.status <= 499) {
+						const requestOptions = {
+						  method: "POST",
+						};
+						
+						fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian", requestOptions)
+						  .then((response) => response.json())
+						  .then((result) => console.log(result))
+						  .catch((error) => console.error(error));
+						  return response.json()
+					} 
+					 })
+				.then((result) => {
+					setStore({contactos: result.contacts });
+					console.log(result)
+				}
+				)
+				.catch((error) => console.error(error));
+	},
 
-				//reset the global store
-				setStore({ demo: demo });
+	DeleteContact: async (id) => {
+		const myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/json");
+
+		const raw = JSON.stringify({
+			// En este ejemplo, se está enviando un cuerpo de solicitud vacío para eliminar el contacto.
+		});
+
+		const requestOptions = {
+			method: "DELETE",
+			headers: myHeaders,
+			body: raw,
+			redirect: "follow"
+		};
+
+		return fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts/${id}`, requestOptions)
+		.then(response => {
+			if (!response.ok) {console.log("error")}
+			return console.log(response);})
+			.then(result => {
+				console.log(result);
+				return result;
+			})
+			.catch(error => console.error(error));
+	},
+
+	EditContact : async (idtwo , userInputTwo) => {
+		const myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+
+			const raw = JSON.stringify({
+			"name": userInputTwo.nombredos,
+			"phone": userInputTwo.direcciondos,
+			"email": userInputTwo.telefonodos,
+			"address": userInputTwo.correodos
+			});
+
+			const requestOptions = {
+			method: "PUT",
+			headers: myHeaders,
+			body: raw,
+			redirect: "follow"
+			};
+			
+			try {
+				const resp = await fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts/${idtwo}`, requestOptions)
+				const data = await resp.json();
+				console.log(data);
+				return true;
+			} catch (error) {
+				console.log("error not found")
+				return false
 			}
-		}
-	};
+	},
+
+	changeColor: (index, color) => {
+		//get the store
+		const store = getStore();
+
+		//we have to loop the entire demo array to look for the respective index
+		//and change its color
+		const demo = store.demo.map((elm, i) => {
+			if (i === index) elm.background = color;
+			return elm;
+		});
+
+		//reset the global store
+		setStore({ demo: demo });
+	}
+}
+};
 };
 
 export default getState;
