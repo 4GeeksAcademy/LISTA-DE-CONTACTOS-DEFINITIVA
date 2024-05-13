@@ -25,14 +25,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  redirect: "follow"
 				};
 				
-				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian", requestOptions)
+				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian%20/contacts", requestOptions)
 				  .then((response) => response.json())
 				  .then((result) => {console.log(result.contacts)})
 				  .catch((error) => console.error(error));
 			},
 			
 			Contacts: async() => {  
-				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts" ,{
+				fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian%20/contacts" ,{
 					method : "GET"
 				})
 				.then((response) =>{
@@ -43,7 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						  method: "POST",
 						};
 						
-						fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian", requestOptions)
+						fetch("https://playground.4geeks.com/contact/agendas/ManuelPrian%20/contacts", requestOptions)
 						  .then((response) => response.json())
 						  .then((result) => console.log(result))
 						  .catch((error) => console.error(error));
@@ -73,7 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			redirect: "follow"
 		};
 
-		return fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts/${id}`, requestOptions)
+		return fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian%20/contacts/${id}`, requestOptions)
 		.then(response => {
 			if (!response.ok) {console.log("error")}
 			return console.log(response);})
@@ -103,7 +103,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			};
 			
 			try {
-				const resp = await fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian/contacts/${idtwo}`, requestOptions)
+				const resp = await fetch(`https://playground.4geeks.com/contact/agendas/ManuelPrian%20/contacts/${idtwo}`, requestOptions)
 				const data = await resp.json();
 				console.log(data);
 				return true;
